@@ -57,7 +57,17 @@ export default function RegistrationForm({ onRegister }: { onRegister: (v: Visit
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
     >
-      <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-2xl border border-white/40 w-full relative overflow-hidden">
+      <div className="relative w-full flex flex-col items-center">
+        {/* Guardian looking at the form */}
+        <motion.div
+          animate={{ y: [-3, 3, -3] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="relative w-40 h-40 z-20 -mb-10 drop-shadow-xl"
+        >
+          <img src="/images/guardian-pose-2.png" alt="Guardian Smiling" className="w-full h-full object-contain" />
+        </motion.div>
+
+        <div className="bg-white/80 backdrop-blur-xl p-8 pt-12 rounded-[2rem] shadow-2xl border border-white/40 w-full relative overflow-hidden">
         {/* Soft glow behind form */}
         <div className="absolute -top-20 -right-20 w-40 h-40 bg-yellow-300/30 blur-3xl rounded-full pointer-events-none" />
         <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-red-400/20 blur-3xl rounded-full pointer-events-none" />
@@ -130,6 +140,7 @@ export default function RegistrationForm({ onRegister }: { onRegister: (v: Visit
             )}
           </motion.button>
         </form>
+      </div>
       </div>
     </motion.div>
   );

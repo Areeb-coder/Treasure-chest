@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Preloader from "@/components/Preloader";
 import RegistrationForm from "@/components/RegistrationForm";
 import TreasureExperience from "@/components/TreasureExperience";
@@ -16,6 +16,9 @@ interface Visitor {
 export default function Home() {
   const [stage, setStage] = useState<"preload" | "register" | "game">("preload");
   const [visitor, setVisitor] = useState<Visitor | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const handlePreloadComplete = () => {
     setStage("register");
@@ -30,20 +33,22 @@ export default function Home() {
     <main className="relative min-h-screen w-full overflow-hidden flex flex-col justify-center items-center font-[family-name:var(--font-outfit)] bg-transparent">
       
       {/* Background Particles Layer */}
-      <div className="fixed inset-0 pointer-events-none -z-10">
-         {[...Array(15)].map((_, i) => (
-           <div 
-             key={i}
-             className="absolute w-2 h-2 bg-yellow-400 rounded-full animate-sparkle opacity-0"
-             style={{
-               top: `${Math.random() * 100}%`,
-               left: `${Math.random() * 100}%`,
-               animationDelay: `${Math.random() * 3}s`,
-               filter: 'blur(2px)'
-             }}
-           />
-         ))}
-      </div>
+      {mounted && (
+        <div className="fixed inset-0 pointer-events-none -z-10">
+           {[...Array(15)].map((_, i) => (
+             <div 
+               key={i}
+               className="absolute w-2 h-2 bg-yellow-400 rounded-full animate-sparkle opacity-0"
+               style={{
+                 top: `${Math.random() * 100}%`,
+                 left: `${Math.random() * 100}%`,
+                 animationDelay: `${Math.random() * 3}s`,
+                 filter: 'blur(2px)'
+               }}
+             />
+           ))}
+        </div>
+      )}
 
       <AnimatePresence mode="wait">
         {stage === "preload" && (

@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [isVisible, setIsVisible] = useState(true);
@@ -37,21 +36,26 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
       >
-        <motion.div
-          animate={{ y: [-10, 10, -10], rotate: [-2, 2, -2] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-64 h-64 mb-8"
-        >
-          {/* Ambient Glow */}
-          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-48 h-12 bg-yellow-400/30 blur-2xl rounded-full" />
-          
-          <div className="relative w-full h-full drop-shadow-2xl">
-            {/* Fallback box if image is missing */}
-            <div className="w-full h-full bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-3xl shadow-xl flex items-center justify-center border-4 border-yellow-200">
-               <span className="text-4xl">💎</span>
-            </div>
-          </div>
-        </motion.div>
+        <div className="relative flex items-end justify-center mb-12">
+          {/* Sleeping Guardian */}
+          <motion.div
+            className="absolute -left-16 bottom-0 w-32 h-32 z-20"
+            animate={{ y: [-5, 5, -5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <img src="/images/guardian-pose-13.png" alt="Sleeping Guardian" className="w-full h-full object-contain" />
+          </motion.div>
+
+          {/* Master Chest */}
+          <motion.div
+            animate={{ y: [-10, 10, -10] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-64 h-64 z-10"
+          >
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-48 h-12 bg-yellow-400/30 blur-2xl rounded-full" />
+            <img src="/master-chest.png" alt="Treasure Chest" className="w-full h-full object-contain drop-shadow-2xl relative" />
+          </motion.div>
+        </div>
 
         <h1 className="text-2xl font-bold text-[#D4AC0D] mb-6 drop-shadow-sm flex items-center gap-2">
           <span className="animate-pulse">✨</span> Preparing Your Mystery...
