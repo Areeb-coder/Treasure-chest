@@ -202,11 +202,10 @@ export default function TreasureExperience({ visitor }: { visitor: Visitor }) {
                   key={color}
                   initial={{ opacity: 1, scale: 1 }}
                   animate={{ 
-                    y: [-4, 4, -4],
                     opacity: selectedChest && selectedChest !== color ? 0 : 1,
                     scale: selectedChest === color ? 1.5 : 1,
                     x: selectedChest === color ? (color === 'red' ? 100 : color === 'green' ? -100 : 0) : 0,
-                    y: selectedChest === color ? -50 : 0
+                    y: selectedChest ? (selectedChest === color ? -50 : 0) : [-4, 4, -4]
                   }}
                   transition={{ 
                      y: selectedChest ? { duration: 0.5 } : { duration: 3 + Math.random(), repeat: Infinity, ease: "easeInOut" },
