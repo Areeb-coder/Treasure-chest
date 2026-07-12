@@ -16,6 +16,8 @@ interface RewardResponse {
   reward: string;
   rewardId: string | null;
   isWinner: boolean;
+  bearsLeft?: number;
+  vouchersLeft?: number;
 }
 
 export default function TreasureExperience({ visitor }: { visitor: Visitor }) {
@@ -306,6 +308,15 @@ export default function TreasureExperience({ visitor }: { visitor: Visitor }) {
                   <p className="text-xl font-bold text-gray-800 my-4 py-4 bg-gray-50 rounded-xl shadow-inner border border-gray-100">{rewardData?.reward}</p>
                   <p className="text-sm text-gray-500 font-mono bg-gray-100 py-1 px-3 rounded-full inline-block">ID: {rewardData?.rewardId}</p>
                   <p className="text-xs text-gray-400 mt-4">Show this at the counter.</p>
+                  
+                  {/* Remaining Inventory Banner */}
+                  {(rewardData?.bearsLeft !== undefined || rewardData?.vouchersLeft !== undefined) && (
+                    <div className="mt-6 flex justify-center gap-4 text-xs font-bold text-gray-500 bg-gray-50 py-2 px-4 rounded-full border border-gray-100">
+                      <span>🧸 {rewardData?.bearsLeft ?? 4} Left</span>
+                      <span>|</span>
+                      <span>🎟️ {rewardData?.vouchersLeft ?? 4} Left</span>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
@@ -313,6 +324,15 @@ export default function TreasureExperience({ visitor }: { visitor: Visitor }) {
                     <img src="/images/guardian-pose-2.png" alt="Guardian Smiling" className="w-full h-full object-contain" />
                   </motion.div>
                   <p className="text-xl font-bold text-gray-800 my-4 py-4 px-4 bg-gray-50 rounded-xl shadow-inner border border-gray-100">{rewardData?.reward || "Wait, did someone already take this? Just dust and cobwebs in here... 😂"}</p>
+                  
+                  {/* Remaining Inventory Banner */}
+                  {(rewardData?.bearsLeft !== undefined || rewardData?.vouchersLeft !== undefined) && (
+                    <div className="mt-4 flex justify-center gap-4 text-xs font-bold text-gray-500 bg-gray-50 py-2 px-4 rounded-full border border-gray-100">
+                      <span>🧸 {rewardData?.bearsLeft ?? 4} Left</span>
+                      <span>|</span>
+                      <span>🎟️ {rewardData?.vouchersLeft ?? 4} Left</span>
+                    </div>
+                  )}
                 </>
               )}
             </motion.div>

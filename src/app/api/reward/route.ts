@@ -43,39 +43,44 @@ export async function POST(req: Request) {
       }, { status: 200 });
     }
 
-    let won = false;
-    
-    // Check global stats to ensure max 4 winners
-    const stats = await EventStats.findOne({});
-    const currentWins = stats ? stats.winningRewardsIssued : 0;
+    const TOTAL_BEARS = 4;
+    const TOTAL_VOUCHERS = 4; // Assuming 4 vouchers like before
 
-    if (currentWins < 4) {
-      // Roll the dice
-      if (Math.random() < WINNING_PROBABILITY) {
-        won = true;
-      }
-    }
+    const stats = await EventStats.findOne({});
+    const currentVouchers = stats ? stats.vouchersIssued : 0;
+    const currentBears = stats ? stats.bearsIssued : 0;
 
     let assignedReward = null;
     let assignedRewardId = null;
 
-    if (won) {
-      // Need to atomically increment and ensure we don't exceed 4 concurrently
+    // Check for Bear Key Chain
+    const bearWinningScans = [1, 5, 20, 50];
+    const isBearWinner = bearWinningScans.includes(visitor.visitorNumber);
+
+    if (isBearWinner && currentBears < TOTAL_BEARS) {
       const updatedStats = await EventStats.findOneAndUpdate(
-        { winningRewardsIssued: { $lt: 4 } }, // Ensure it's still less than 4
-        { $inc: { winningRewardsIssued: 1 } },
+        {},
+        { $inc: { bearsIssued: 1 } },
         { new: true, upsert: true }
       );
-
-      // If updatedStats is null, it means we hit the limit concurrently
-      if (updatedStats) {
-        assignedReward = '₹50 OFF on purchases above ₹799';
-        assignedRewardId = `MT-${Math.floor(10000 + Math.random() * 90000)}`;
+      assignedReward = 'Cute Bear Key Chain 🧸';
+      assignedRewardId = `BEAR-${Math.floor(1000 + Math.random() * 9000)}`;
+    } else if (currentVouchers < TOTAL_VOUCHERS) {
+      // Roll the dice for voucher
+      if (Math.random() < WINNING_PROBABILITY) {
+        const updatedStats = await EventStats.findOneAndUpdate(
+          { vouchersIssued: { $lt: TOTAL_VOUCHERS } },
+          { $inc: { vouchersIssued: 1 } },
+          { new: true, upsert: true }
+        );
+        if (updatedStats) {
+          assignedReward = '₹50 OFF on purchases above ₹799';
+          assignedRewardId = `MT-${Math.floor(10000 + Math.random() * 90000)}`;
+        }
       }
     }
 
     if (!assignedReward) {
-      // Did not win, assign a funny message
       assignedReward = FUNNY_MESSAGES[Math.floor(Math.random() * FUNNY_MESSAGES.length)];
     }
 
@@ -84,10 +89,17 @@ export async function POST(req: Request) {
     visitor.rewardId = assignedRewardId;
     await visitor.save();
 
+    // Fetch latest stats for the UI
+    const latestStats = await EventStats.findOne({});
+    const bearsLeft = Math.max(0, TOTAL_BEARS - (latestStats?.bearsIssued || 0));
+    const vouchersLeft = Math.max(0, TOTAL_VOUCHERS - (latestStats?.vouchersIssued || 0));
+
     return NextResponse.json({ 
       reward: assignedReward,
       rewardId: assignedRewardId,
-      isWinner: !!assignedRewardId
+      isWinner: !!assignedRewardId,
+      bearsLeft,
+      vouchersLeft
     }, { status: 200 });
   } catch (error: any) {
     console.error('Reward Generation Error:', error);
